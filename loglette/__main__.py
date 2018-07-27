@@ -4,15 +4,17 @@ import sys
 from argparse import ArgumentParser, Namespace
 from pathlib import Path
 
-from loglette import Changelog
+from loglette import ChangelogRange
 
 
 def run(args: Namespace):
-    changelog = Changelog.parse(args.file.read_text())
-    print(changelog.format(args.format))
+    changelogs = ChangelogRange.parse(args.file.read_text())
+    print(changelogs.last.format(args.format))
 
 
 def main(*args):
+    args = args or None
+
     parser = ArgumentParser("Loglette", description="A tool to make changelogs easy or something like that")
     parser.add_argument("file", type=Path, help="The file you'd like to parse")
     parser.add_argument("-f", "--format", help="output format", default="markdown")

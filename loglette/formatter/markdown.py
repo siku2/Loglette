@@ -1,6 +1,6 @@
 from . import formatter
 from .special import GroupTypes
-from ..changelog import Changelog
+from ..changelog import Changelog, ReleaseDate
 
 
 @formatter("markdown", "md")
@@ -8,10 +8,10 @@ class MarkdownFormatter(GroupTypes):
     def format(self, changelog: Changelog, **options) -> str:
         change_types = super().format(changelog, **options)
 
-        if changelog.release_date:
-            release = changelog.release_date.strftime(options.get("time_format", "%d %b %Y"))
+        if isinstance(changelog.release_date, ReleaseDate):
+            release = changelog.release_date.value
         else:
-            release = "Unreleased"
+            release = changelog.release_date.strftime(options.get("time_format", "%d %b %Y"))
 
         markdown = [f"# Version {changelog.version} ({release})"]
 
