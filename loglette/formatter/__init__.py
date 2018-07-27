@@ -18,7 +18,12 @@ class Formatter(abc.ABC):
 
 
 def get_formatter(name: str) -> Formatter:
-    return _ALIAS_MAP[name.lower().strip()]
+    name = name.lower().strip()
+    formatter = _ALIAS_MAP[name]
+    if not isinstance(formatter, Formatter):
+        formatter = formatter()
+        _ALIAS_MAP[name] = formatter
+    return formatter
 
 
 def register_formatter(formatter: Type[Formatter], alias: Sequence[str]):

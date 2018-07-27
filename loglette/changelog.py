@@ -1,3 +1,4 @@
+import inspect
 from collections import OrderedDict
 from datetime import datetime
 from enum import Enum
@@ -135,7 +136,7 @@ class Changelog:
             from .formatter import get_formatter
             formatter = get_formatter(formatter)
 
-        if issubclass(formatter, Formatter):
+        if inspect.isclass(formatter) and issubclass(formatter, Formatter):
             formatter = formatter()
 
         if isinstance(formatter, Formatter):

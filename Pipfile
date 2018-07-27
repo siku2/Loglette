@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 python-dateutil = "*"
+mistune = "*"
+"jinja2" = "*"
 
 [dev-packages]
 
