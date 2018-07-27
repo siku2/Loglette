@@ -1,5 +1,6 @@
 from collections import OrderedDict
 from datetime import datetime
+from enum import Enum
 from operator import itemgetter
 from typing import Any, Dict, Iterable, Iterator, List, Optional, Reversible, TYPE_CHECKING, Tuple, Type, Union, overload
 
@@ -13,9 +14,17 @@ _DEFAULT = object()
 HeaderPType = Union[str, Dict[str, str]]
 
 
+class ReleaseDate(Enum):
+    UNRELEASED = "unreleased"
+    NEVER = "never"
+
+    def __str__(self) -> str:
+        return self.value
+
+
 class ChangelogHeader:
     version: Version
-    release_date: datetime
+    release_date: Union[datetime, ReleaseDate]
 
     def __init__(self, version: Version, release_date: datetime):
         self.version = version
@@ -32,7 +41,12 @@ class ChangelogHeader:
         version = Version.parse(headers.pop("version"))
         release_date = headers.pop("release", None)
         if release_date:
-            release_date = parser.parse_date(release_date)
+            try:
+                release_date = ReleaseDate(release_date)
+            except ValueError:
+                release_date = parser.parse_date(release_date)
+        else:
+            release_date = ReleaseDate.UNRELEASED
 
         return cls(version, release_date)
 
