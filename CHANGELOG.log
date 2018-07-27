@@ -1,0 +1,7 @@
+// of course this is a Loglette changelog. I mean really, what did you expect...
+
+version: 0.0.1-dev;
+---
+
+Changed: Loglette CLI now uses lowercase "loglette" to make things clearer;
+Fixed: Fixed a bug which caused the Loglette CLI to error when using it directly (without installing);

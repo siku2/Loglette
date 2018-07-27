@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import sys
 from argparse import ArgumentParser, Namespace
 from pathlib import Path
 
@@ -15,7 +14,7 @@ def run(args: Namespace):
 def main(*args):
     args = args or None
 
-    parser = ArgumentParser("Loglette", description="A tool to make changelogs easy or something like that")
+    parser = ArgumentParser("loglette", description="A tool to make changelogs easy or something like that")
     parser.add_argument("file", type=Path, help="The file you'd like to parse")
     parser.add_argument("-f", "--format", help="output format", default="markdown")
 
@@ -24,4 +23,4 @@ def main(*args):
 
 
 if __name__ == "__main__":
-    main(*sys.argv)
+    main()
