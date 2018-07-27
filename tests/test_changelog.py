@@ -30,7 +30,7 @@ def test_spec():
                        "               ####\n                    Almost\n"
                        "                     ASCII\n                       Art\n"
                        "               ####", 0),
-        ("THIS", "isn't", 599999),
+        ("THIS", "isn't", 599999)
 
     ]
 
