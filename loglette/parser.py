@@ -17,7 +17,7 @@ def parse_value(value: str, text_style: str = None) -> str:
         if text_style == "|":
             value = value.strip()
         elif text_style == ">":
-            value = pattern.WHITESPACE_STRIPPER.sub(" ", value)
+            value = pattern.WHITESPACE_STRIPPER.sub(" ", value).strip()
         else:
             raise SyntaxError(f"Unknown text style ({text_style})")
     return value

@@ -23,6 +23,12 @@ class Version:
     def __len__(self) -> int:
         return self.length
 
+    def __hash__(self) -> int:
+        h = hash(self.parts)
+        if self.tag:
+            h += hash(self.tag)
+        return h
+
     def __getitem__(self, item: int) -> int:
         return self.parts[item]
 

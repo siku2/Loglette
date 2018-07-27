@@ -1,0 +1,15 @@
+version: 5;
+----------
+added: a test;
+added: another test;
+=====================
+
+version: 6;
+---------
+added: sorting logs;
+
+=================================
+
+version: 3-dev;
+---
+deprecated[5]: basically everything is out of date;
