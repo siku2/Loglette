@@ -25,7 +25,7 @@ else:
                 <div class="category-title">{{ change_type }}</div>
                 <div class="category-content">
                     {% for change in changes -%}
-                        <div class="change-text priority-{{ change.priority }}">{{ change.text|safe }}</div>
+                        <div class="change-text priority-{{ change.priority }}">{{ md2html(change.text)|safe }}</div>
                     {% endfor -%}
                 </div>
             </div>
