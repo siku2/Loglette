@@ -7,7 +7,7 @@ Example: `-f md` and `-f markdown` select the Markdown Formatter
 (which is the default anyway)
 
 ### General Options:
-`time_format` (optional): [strftime format template][strftime-behaviour]
+`time_format` (optional): [strftime format template][strftime-behaviour] for the release date
 
 
 
@@ -30,7 +30,8 @@ to automatically install them:<br>
 `pip install loglette[html]`
 
 #### Options
-`template` (optional): A [Jinja2 template string][jinja2-templates]. The template is rendered using the following variables:
+`template` (optional): A [Jinja2 template string][jinja2-templates].
+The template is rendered using the following variables:
 
 |   Variable    | Description
 | ------------- | ----------------------------------------------------

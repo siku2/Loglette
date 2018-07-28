@@ -150,6 +150,7 @@ ChangelogRangePType = Union[str, List[ChangelogPType]]
 
 class ChangelogRange:
     _versions: OrderedDict
+    _file_order: OrderedDict
     versions: Reversible[Version]
     changelogs: Reversible[Changelog]
 
@@ -167,13 +168,13 @@ class ChangelogRange:
         else:
             _versions = list(versions.items())
 
-        _versions.sort(key=itemgetter(0))
-        self._versions = OrderedDict(_versions)
+        self._file_order = OrderedDict(_versions)
+        self._versions = OrderedDict(sorted(_versions, key=itemgetter(0)))
         self.versions = self._versions.keys()
         self.changelogs = self._versions.values()
 
     def __str__(self) -> str:
-        return f"{self.first} -> {self.last}"
+        return f"{self.oldest} -> {self.latest}"
 
     def __len__(self) -> int:
         return len(self._versions)
@@ -200,6 +201,9 @@ class ChangelogRange:
     def __delitem__(self, key: VersionCompType):
         del self._versions[key]
 
+    def __contains__(self, item: VersionCompType) -> bool:
+        return item in self.versions
+
     @classmethod
     def parse(cls, changelogs: ChangelogRangePType) -> "ChangelogRange":
         if isinstance(changelogs, str):
@@ -210,10 +214,18 @@ class ChangelogRange:
 
     @property
     def first(self) -> Optional[Changelog]:
-        return next(iter(self), None)
+        return next(iter(self._file_order.values()), None)
 
     @property
     def last(self) -> Optional[Changelog]:
+        return next(reversed(self._file_order.values()), None)
+
+    @property
+    def oldest(self) -> Optional[Changelog]:
+        return next(iter(self), None)
+
+    @property
+    def latest(self) -> Optional[Changelog]:
         return next(reversed(self.changelogs), None)
 
     def copy(self) -> "ChangelogRange":
@@ -259,6 +271,6 @@ class ChangelogRange:
         changes = []
         for changelog in reversed(self):
             changes.extend(changelog.changes)
-        last = self.last
+        last = self.latest
         header = ChangelogHeader(last.version, last.release_date)
         return Changelog(header, changes)

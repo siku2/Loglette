@@ -4,5 +4,6 @@ version: 0.1.0-dev;
 ---
 
 Added[1]: Added an HTML formatter;
+Added: VersionRange now keeps a reference for a changelog's position in the file;
 Changed: Loglette CLI now uses lowercase "loglette" to make things clearer;
 Fixed: Fixed a bug which caused the Loglette CLI to error when using it directly (without installing);
