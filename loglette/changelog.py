@@ -2,17 +2,30 @@ import inspect
 from collections import OrderedDict
 from datetime import datetime
 from enum import Enum
+from functools import partial
 from operator import itemgetter
 from typing import Any, Dict, Iterable, Iterator, List, Optional, Reversible, TYPE_CHECKING, Tuple, Type, Union, overload
 
-from . import parser
+from .parser import Parser, ParserPType, get_parser, guess_parser
 from .version import Version, VersionCompType
 
 if TYPE_CHECKING:
     from .formatter import Formatter
 
 _DEFAULT = object()
-HeaderPType = Union[str, Dict[str, str]]
+
+
+def find_parser(parser: Optional[ParserPType], text: str = None) -> Parser:
+    if parser:
+        parser = get_parser(parser)
+
+    if not parser:
+        if isinstance(text, str):
+            parser = guess_parser(text)
+        else:
+            parser = get_parser("loglette")
+
+    return parser
 
 
 class ReleaseDate(Enum):
@@ -21,6 +34,9 @@ class ReleaseDate(Enum):
 
     def __str__(self) -> str:
         return self.value
+
+
+HeaderPType = Union[str, Dict[str, str]]
 
 
 class ChangelogHeader:
@@ -35,8 +51,9 @@ class ChangelogHeader:
         return f"version: {self.version};\nrelease: {self.release_date};"
 
     @classmethod
-    def parse(cls, headers: HeaderPType) -> "ChangelogHeader":
+    def parse(cls, headers: HeaderPType, parser: ParserPType = None) -> "ChangelogHeader":
         if isinstance(headers, str):
+            parser = find_parser(parser, headers)
             headers = parser.parse_header(headers)
 
         version = Version.parse(headers.pop("version"))
@@ -45,6 +62,7 @@ class ChangelogHeader:
             try:
                 release_date = ReleaseDate(release_date)
             except ValueError:
+                parser = find_parser(parser)
                 release_date = parser.parse_date(release_date)
         else:
             release_date = ReleaseDate.UNRELEASED
@@ -70,7 +88,11 @@ class Change:
         return f"{self.change_type}[{self.priority}]: {self.text};"
 
     @classmethod
-    def parse(cls, change: ChangePType) -> "Change":
+    def parse(cls, change: ChangePType, parser: ParserPType = None) -> "Change":
+        if isinstance(change, str):
+            parser = find_parser(parser, change)
+            change = next(iter(parser.parse_changes(change)))
+
         change_type = change.pop("type")
         priority = change.pop("priority")
         if priority:
@@ -83,13 +105,14 @@ class Change:
         return cls(change_type, priority, text)
 
     @classmethod
-    def parse_changes(cls, changes: ChangesPType) -> List["Change"]:
+    def parse_changes(cls, changes: ChangesPType, parser: ParserPType = None) -> List["Change"]:
         if isinstance(changes, str):
+            parser = find_parser(parser, changes)
             changes = parser.parse_changes(changes)
 
         _changes = []
         for change in changes:
-            _change = cls.parse(change)
+            _change = cls.parse(change, parser=parser)
             _changes.append(_change)
 
         return _changes
@@ -117,12 +140,13 @@ class Changelog:
         return getattr(self.header, item)
 
     @classmethod
-    def parse(cls, changelog: ChangelogPType) -> "Changelog":
+    def parse(cls, changelog: ChangelogPType, parser: ParserPType = None) -> "Changelog":
         if isinstance(changelog, str):
+            parser = find_parser(parser, changelog)
             changelog = parser.split_changelog(changelog)
 
-        header = ChangelogHeader.parse(changelog[0])
-        changes = Change.parse_changes(changelog[1])
+        header = ChangelogHeader.parse(changelog[0], parser=parser)
+        changes = Change.parse_changes(changelog[1], parser=parser)
         return cls(header, changes)
 
     def loglette(self) -> str:
@@ -195,7 +219,7 @@ class ChangelogRange:
 
     def __getitem__(self, item):
         if isinstance(item, slice):
-            return self.get_range(item.start, item.stop)
+            return self._get_range(item.start, item.stop)
         return self.get(item)
 
     def __delitem__(self, key: VersionCompType):
@@ -205,11 +229,12 @@ class ChangelogRange:
         return item in self.versions
 
     @classmethod
-    def parse(cls, changelogs: ChangelogRangePType) -> "ChangelogRange":
+    def parse(cls, changelogs: ChangelogRangePType, parser: ParserPType = None) -> "ChangelogRange":
         if isinstance(changelogs, str):
+            parser = find_parser(parser, changelogs)
             changelogs = parser.split_changelogs(changelogs)
 
-        changelogs = list(map(Changelog.parse, changelogs))
+        changelogs = list(map(partial(Changelog.parse, parser=parser), changelogs))
         return cls(changelogs)
 
     @property
@@ -248,7 +273,7 @@ class ChangelogRange:
                 raise
             return default
 
-    def get_range(self, start: Optional[VersionCompType], stop: Optional[VersionCompType]) -> "ChangelogRange":
+    def _get_range(self, start: Optional[VersionCompType], stop: Optional[VersionCompType]) -> "ChangelogRange":
         version_range = self.copy()
 
         if start:

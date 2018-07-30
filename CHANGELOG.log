@@ -3,6 +3,7 @@
 version: 0.1.0-dev;
 ---
 
+Added[2]: Added support for multiple parsers;
 Added[1]: Added an HTML formatter;
 Added: VersionRange now keeps a reference for a changelog's position in the file;
 Changed: Loglette CLI now uses lowercase "loglette" to make things clearer;
