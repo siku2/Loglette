@@ -13,7 +13,7 @@ class MarkdownFormatter(GroupTypes):
         else:
             release = changelog.release_date.strftime(options.get("time_format", "%d %b %Y"))
 
-        markdown = [f"# Version {changelog.version} ({release})"]
+        markdown = [f"## Version {changelog.version} ({release})"]
 
         for change_type, changes in change_types.items():
             markdown.append(f"\n### {change_type}")

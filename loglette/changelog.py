@@ -57,7 +57,7 @@ class ChangelogHeader:
             headers = parser.parse_header(headers)
 
         version = Version.parse(headers.pop("version"))
-        release_date = headers.pop("release", None)
+        release_date = headers.pop("release_date", None)
         if release_date:
             try:
                 release_date = ReleaseDate(release_date)
@@ -170,7 +170,6 @@ class Changelog:
 
 
 ChangelogRangePType = Union[str, List[ChangelogPType]]
-
 
 class ChangelogRange:
     _versions: OrderedDict

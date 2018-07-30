@@ -23,8 +23,12 @@ class Parser(abc.ABC):
         """Check whether this parser can parse the text"""
         try:
             changelogs = self.split_changelogs(text)
+            if not changelogs:
+                return False
             for changelog in changelogs:
                 _header, _changes = self.split_changelog(changelog)
+                if not any((_header, _changes)):
+                    return False
                 header = self.parse_header(_header)
                 changes = self.parse_changes(_changes)
 

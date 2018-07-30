@@ -36,27 +36,38 @@ class Version:
         return iter(self.parts)
 
     def __eq__(self, other: VersionCompType) -> bool:
+        if not isinstance(other, (Version, tuple)):
+            return NotImplemented
+
         if isinstance(other, Version):
             if not self.same_tag_as(other):
                 return False
         return self.same_version_as(other)
 
     def __gt__(self, other: VersionCompType) -> bool:
-        for self_part, other_part in zip_longest(self, other, fillvalue=0):
-            if self_part > other_part:
-                return True
-        return False
+        if isinstance(other, (Version, tuple)):
+            for self_part, other_part in zip_longest(self, other, fillvalue=0):
+                if self_part > other_part:
+                    return True
+            return False
+        return NotImplemented
 
     def __ge__(self, other: VersionCompType) -> bool:
+        if not isinstance(other, (Version, tuple)):
+            return NotImplemented
         return self > other or self.same_version_as(other)
 
     def __lt__(self, other: VersionCompType) -> bool:
+        if not isinstance(other, (Version, tuple)):
+            return NotImplemented
         for self_part, other_part in zip_longest(self, other, fillvalue=0):
             if self_part < other_part:
                 return True
         return False
 
     def __le__(self, other: VersionCompType) -> bool:
+        if not isinstance(other, (Version, tuple)):
+            return NotImplemented
         return self < other or self.same_version_as(other)
 
     @property
@@ -105,7 +116,11 @@ class Version:
             version = elements[0]
             tag = None
 
-        parts = map(int, version.split("."))
+        _parts = version.split(".")
+        if not all(part.isnumeric() for part in _parts):
+            return SpecialVersion(v)
+
+        parts = map(int, _parts)
 
         return cls(*parts, tag=tag)
 
@@ -128,3 +143,22 @@ class Version:
         if not code:
             return 0
         return int(code)
+
+
+class SpecialVersion(Version):
+    name: str
+
+    def __init__(self, name: str):
+        self.name = name
+        super().__init__()
+
+    def __hash__(self) -> int:
+        return hash(self.name)
+
+    def __repr__(self) -> str:
+        return self.name
+
+    def __eq__(self, other: VersionCompType) -> bool:
+        if not isinstance(other, SpecialVersion):
+            return NotImplemented
+        return self.name == other.name

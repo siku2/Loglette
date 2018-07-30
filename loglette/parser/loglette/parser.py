@@ -24,6 +24,8 @@ class LogletteParser(Parser):
             value = self.parse_value(value, text_style)
             headers[key] = value
 
+        headers["release_date"] = headers.get("release")
+
         return headers
 
     def parse_changes(self, text: str) -> List[Dict[str, str]]:
