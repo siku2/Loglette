@@ -50,10 +50,11 @@ depends on the [`Formatter`].
 
 #### \<priority\>
 `<priority>` is an **optional** non-negative integer which defaults to 0.
-The effect on the output strongly depends on the [`Formatter`].
+The effect on the output strongly depends on the `[Formatter]`.
 
 #### \<text style\>
-You may provide a style hint for the log text based on the [YAML][yaml-home] thingy thing (TODO).
+You may provide a style hint for the log text based on the [YAML][yaml-home] thingy thing
+(TODO).
 
 
 
@@ -84,7 +85,7 @@ Actually, everything is a comment as long as it doesn't match the format above s
 
 
 
-[`Formatter`]: #formatter
+[Formatter]: /formatters
 
 [keepachangelog-how]:   https://keepachangelog.com/en/1.0.0/#how    "Keep a Changelog Change Types"
 [yaml-home]:            http://yaml.org/    "Official YAML Web Site"

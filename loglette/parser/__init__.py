@@ -1,4 +1,5 @@
 import abc
+import inspect
 from datetime import datetime
 from functools import partial
 from pathlib import Path
@@ -76,7 +77,7 @@ ParserPType = Union[Type[Parser], Parser, str]
 def get_parser(_parser: ParserPType) -> Parser:
     if isinstance(_parser, Parser):
         return _parser
-    elif issubclass(_parser, Parser):
+    elif inspect.isclass(_parser) and issubclass(_parser, Parser):
         return _parser()
     elif isinstance(_parser, str):
         _parser = _parser.lower().strip()
