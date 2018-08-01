@@ -8,7 +8,7 @@ text = Path("tests/logs/keep-a-changelog.md").read_text("utf-8")
 
 
 def test_pattern():
-    changelogs = parse(text)
+    changelogs = parse(text, parser)
     assert len(changelogs) == 12
 
     changelog = changelogs.latest
@@ -16,8 +16,6 @@ def test_pattern():
     assert changelog.release_date == datetime(2017, 6, 20)
     assert changelog.changes[0].text == "New visual identity by @tylerfortune8."
     assert changelog.changes[0].change_type == "ADDED"
-
-    print(changelog.loglette())
 
 
 def test_can_handle():

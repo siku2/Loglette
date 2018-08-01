@@ -3,11 +3,11 @@
 from argparse import ArgumentParser, Namespace
 from pathlib import Path
 
-from loglette import ChangelogRange, Version
+from loglette import Version, parse
 
 
 def run(args: Namespace):
-    changelogs = ChangelogRange.parse(args.file.read_text(), parser=args.parser)
+    changelogs = parse(args.file.read_text(), parser=args.parser)
 
     # Check against presets using lowercase but make sure to preserve version tag!
     version = args.version
