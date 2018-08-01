@@ -1,6 +1,7 @@
 // of course this is a Loglette changelog. I mean really, what did you expect...
 
-version: 0.1.0-dev;
+version: 0.1.0;
+release: 2018-08-01;
 ---
 
 Added[2]:   Added support for multiple parsers;
