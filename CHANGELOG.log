@@ -1,0 +1,14 @@
+// of course this is a Loglette changelog. I mean really, what did you expect...
+
+version: 0.1.0;
+release: 2018-08-01;
+---
+
+Added[2]:   Added support for multiple parsers;
+Added[1]:   Markdown parser which parses changelogs in the format of [Keep a Changelog](https://keepachangelog.com/en/1.0.0/);
+Added[1]:   Added an HTML formatter;
+Added:      VersionRange now keeps a reference for a changelog's position in the file;
+Added:      CLI support for specifying the parser;
+Changed:    Loglette CLI now uses lowercase "loglette" to make things clearer;
+Changed:    "release" is now called "release_date" internally;
+Fixed:      Fixed a bug which caused the Loglette CLI to error when using it directly (without installing);

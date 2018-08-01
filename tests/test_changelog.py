@@ -12,6 +12,10 @@ def test_version_range():
     assert len(vrange.flatten()) == 4
     assert vrange.get((6,)).changes[0].text == "sorting logs"
     assert len(vrange[(2, 0, 0):(5, 5, 1)]) == 2
+    assert vrange.first.version == (5,)
+    assert vrange.last.version == (3,)
+    assert vrange.latest.version == (6,)
+    assert vrange.oldest.version == (3,)
 
 
 def test_spec():

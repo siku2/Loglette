@@ -1,10 +1,10 @@
 import abc
-import importlib
 from functools import partial
 from pathlib import Path
 from typing import Any, Sequence, Type
 
 from ..changelog import Changelog
+from ..utils import import_directory
 
 _ALIAS_MAP = {}
 _FORMATTERS = set()
@@ -18,7 +18,12 @@ class Formatter(abc.ABC):
 
 
 def get_formatter(name: str) -> Formatter:
-    return _ALIAS_MAP[name.lower().strip()]
+    name = name.lower().strip()
+    formatter = _ALIAS_MAP[name]
+    if not isinstance(formatter, Formatter):
+        formatter = formatter()
+        _ALIAS_MAP[name] = formatter
+    return formatter
 
 
 def register_formatter(formatter: Type[Formatter], alias: Sequence[str]):
@@ -43,13 +48,4 @@ def formatter(*names: str):
     return partial(register_formatter, alias=names)
 
 
-def load_formatters():
-    here = Path(__file__)
-    files = here.parent.glob("*.py")
-    for file in files:
-        if file == here:
-            continue
-        importlib.import_module("." + file.stem, package=__package__)
-
-
-load_formatters()
+import_directory(Path(__file__), __package__)

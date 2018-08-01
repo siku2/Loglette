@@ -1,5 +1,5 @@
-from loglette import parser
-from . import example_test
+from loglette.parser.loglette import LogletteParser as parser
+from tests import example_test
 
 
 def test_text_style():
