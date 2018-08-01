@@ -6,7 +6,7 @@ _WS = r"[ \t]*"
 _HEADER_MATCHER = rf"^#{{2}}{_WS}\[.+?\](?:{_WS}-{_WS}.+?)?{_WS}$"
 _FLAGS = re.MULTILINE
 
-CHANGELOG_SPLITTER: Pattern = re.compile(rf"(?={_HEADER_MATCHER})", _FLAGS)
+CHANGELOG_SPLITTER: Pattern = re.compile(rf"({_HEADER_MATCHER})", _FLAGS)
 HEADER_SPLITTER: Pattern = re.compile(rf"({_HEADER_MATCHER})", _FLAGS)
 
 _HEADER_PARSER = rf"^#{{2}}{_WS}\[(.+?)\](?:{_WS}-{_WS}(.+?))?{_WS}$"

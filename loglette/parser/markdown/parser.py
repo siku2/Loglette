@@ -41,4 +41,5 @@ class MarkdownParser(Parser):
 
     @classmethod
     def split_changelogs(cls, text: str) -> List[str]:
-        return pattern.CHANGELOG_SPLITTER.split(text)[1:]
+        parts = pattern.CHANGELOG_SPLITTER.split(text)[1:]
+        return ["".join(parts[i:i + 2]) for i in range(0, len(parts), 2)]
